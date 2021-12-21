@@ -3,7 +3,10 @@ package com.ytking.hyperheuristicscheduling.controller;
 import com.ytking.hyperheuristicscheduling.dao.OrderDao;
 import com.ytking.hyperheuristicscheduling.dao.ProcessDao;
 import com.ytking.hyperheuristicscheduling.dao.ProductDao;
+import com.ytking.hyperheuristicscheduling.dao.R;
+import com.ytking.hyperheuristicscheduling.service.MakespanService;
 import com.ytking.hyperheuristicscheduling.service.ReadDataService;
+import com.ytking.hyperheuristicscheduling.util.result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 应涛
@@ -18,26 +22,34 @@ import java.util.List;
  * @function：
  */
 @RestController
-@RequestMapping("/test")
+@RequestMapping("/read")
 public class DataController {
     @Autowired
     private ReadDataService readDataService;
+    @Autowired
+    private MakespanService makespanService;
     @PostMapping("/readorder")
-    public List<OrderDao> readorder(MultipartFile file)  {
+    public R readorder(MultipartFile file)  {
         List<OrderDao> orderList ;
         orderList= readDataService.readOrder(file);
-        return orderList;
+        return result.success(orderList);
     }
     @PostMapping("/readproduct")
-    public List<ProductDao> readproduct(MultipartFile file)  {
+    public R readproduct(MultipartFile file)  {
         List<ProductDao> productList ;
         productList= readDataService.readProduct(file);
-        return productList;
+        return result.success(productList);
     }
     @PostMapping("/readprocess")
-    public List<ProcessDao> readprcess(MultipartFile file)  {
+    public R readprcess(MultipartFile file)  {
         List<ProcessDao> processList ;
         processList= readDataService.readProcess(file);
-        return processList;
+        return result.success(processList);
+    }
+    @PostMapping("/test")
+    public R test(List<MultipartFile> fileList)  {
+        List<ProcessDao> processList ;
+        makespanService.makespan(fileList);
+        return result.success("asd");
     }
 }
