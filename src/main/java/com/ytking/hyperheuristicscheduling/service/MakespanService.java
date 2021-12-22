@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +22,13 @@ public class MakespanService {
     List<OrderDao> orderList;
     List<ProductDao> productList;
     List<ProcessDao> processList;
+    int[] need = new int[10];//成品所需个数
+    List<Integer> code = new ArrayList<>();
 
+    /**
+     * 读取各种初始数据
+     * @param fileList
+     */
     public void read(List<MultipartFile> fileList){
         for (MultipartFile file : fileList) {//读取初始信息
             if (file.getOriginalFilename().contains("order")) {
@@ -38,7 +45,25 @@ public class MakespanService {
             }
         }
     }
+
+    /**
+     * 进行初始化编码
+     */
+    public void code(){
+        for (OrderDao order:orderList) {
+//            need[Integer.parseInt(order.getProd_id().substring(order.getProd_id().length()-1))]+=order.getNum();
+        }
+//        for (int i = 0; i < 6; i++) {
+//            System.out.println("need[i] = " + need[i]);
+//        }
+    }
+
+    /**
+     * 计算makespan
+     * @param fileList
+     */
     public void makespan(List<MultipartFile> fileList) {
         read(fileList);//信息读取
+        code();
     }
 }
