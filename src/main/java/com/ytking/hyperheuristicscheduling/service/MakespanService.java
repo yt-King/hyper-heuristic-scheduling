@@ -51,11 +51,9 @@ public class MakespanService {
      */
     public void code(){
         for (OrderDao order:orderList) {
-//            need[Integer.parseInt(order.getProd_id().substring(order.getProd_id().length()-1))]+=order.getNum();
+            need[Integer.parseInt(order.getProd_id())-1]+=order.getNum();
         }
-//        for (int i = 0; i < 6; i++) {
-//            System.out.println("need[i] = " + need[i]);
-//        }
+
     }
 
     /**

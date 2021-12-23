@@ -39,7 +39,7 @@ public class ReadDataService {
                 OrderDao order = new OrderDao();
                 String item[] = line.split(",");
                 order.setId(item[0]);
-                order.setProd_id(item[1]);
+                order.setProd_id(item[1].substring(item[1].length()-1));
                 order.setNum(Integer.parseInt(item[2]));
                 orderList.add(order);
                 //获取时间差

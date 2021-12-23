@@ -1,0 +1,8 @@
+order_id,product_id,product_amount,earliest_start_time,latest_end_time
+order_1,product_5,18,2020/12/1 9:00,2020/12/6 9:00
+order_1,product_6,6,2020/12/1 9:00,2020/12/6 9:00
+order_2,product_4,10,2020/12/1 9:00,2020/12/8 9:00
+order_2,product_2,15,2020/12/1 9:00,2020/12/8 9:00
+order_2,product_5,18,2020/12/1 9:00,2020/12/8 9:00
+order_3,product_3,15,2020/12/1 9:00,2020/12/3 9:00
+order_3,product_1,10,2020/12/1 9:00,2020/12/3 9:00
