@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,14 +24,15 @@ public class MakespanService {
     List<ProductDao> productList;
     List<ProcessDao> processList;
     int[] need = new int[10];//成品所需个数
-    int[] semiNeed = new int[25];//半成品所需个数
+    int[] semiNeed = new int[21];//半成品所需个数
     List<Integer> code = new ArrayList<>(); //半成品编码
 
     /**
      * 读取各种初始数据
+     *
      * @param fileList
      */
-    public void read(List<MultipartFile> fileList){
+    public void read(List<MultipartFile> fileList) {
         for (MultipartFile file : fileList) {//读取初始信息
             if (file.getOriginalFilename().contains("order")) {
                 orderList = readDataService.readOrder(file);
@@ -50,19 +52,36 @@ public class MakespanService {
     /**
      * 进行初始化编码
      */
-    public void code(){
-        for (OrderDao order:orderList) {
-            need[Integer.parseInt(order.getProd_id())-1]+=order.getNum();
+    public void code() {
+        for (OrderDao order : orderList) {//读取所需产品个数
+            need[Integer.parseInt(order.getProd_id()) - 1] += order.getNum();
+        }
+        for (int i = 0; i < 6; i++) {//计算所需半成品个数
+            List<Integer> list = productList.get(i).getRealNeeds();
+            for (Integer j : list) {
+                semiNeed[j] += need[i];
+            }
         }
 
     }
 
     /**
      * 计算makespan
+     *
      * @param fileList
      */
     public void makespan(List<MultipartFile> fileList) {
         read(fileList);//信息读取
         code();
+        reset();
+    }
+
+    /**
+     * 重置所有全局变量
+     */
+    public void reset() {
+        need = new int[10];
+        semiNeed = new int[21];
+        code = new ArrayList<>();
     }
 }
