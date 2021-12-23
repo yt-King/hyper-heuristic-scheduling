@@ -62,6 +62,7 @@ public class MakespanService {
                 semiNeed[j] += need[i];
             }
         }
+        //根据订单截止时间来生成初始的编码
 
     }
 

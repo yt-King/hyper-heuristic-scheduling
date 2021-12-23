@@ -8,9 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author 应涛
@@ -19,6 +17,22 @@ import java.util.List;
  */
 @Service
 public class ReadDataService {
+    //按照截止时间升序
+    public List<OrderDao> ascend(List<OrderDao> list){
+        Collections.sort(list, new Comparator<OrderDao>() {
+            @Override
+            public int compare(OrderDao o1, OrderDao o2) {
+                if ((o1.getLimit() > o2.getLimit())){ //比较截止时间大小
+                    return 1;
+                }
+                if (o1.getLimit() == o2.getLimit()){ //比较截止时间大小
+                    return 0;
+                }
+                return -1;
+            }
+        });
+        return list;
+    }
     public List<OrderDao> readOrder(MultipartFile file) {
         List<OrderDao> orderList = new ArrayList();//订单读取
 
@@ -56,7 +70,7 @@ public class ReadDataService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return orderList;
+        return ascend(orderList);//返回排序后的结果
     }
     public List<ProductDao> readProduct(MultipartFile file) {
         List<ProductDao> productList = new ArrayList();//订单读取
