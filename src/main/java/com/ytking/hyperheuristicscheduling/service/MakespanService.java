@@ -23,7 +23,8 @@ public class MakespanService {
     List<ProductDao> productList;
     List<ProcessDao> processList;
     int[] need = new int[10];//成品所需个数
-    List<Integer> code = new ArrayList<>();
+    int[] semiNeed = new int[25];//半成品所需个数
+    List<Integer> code = new ArrayList<>(); //半成品编码
 
     /**
      * 读取各种初始数据

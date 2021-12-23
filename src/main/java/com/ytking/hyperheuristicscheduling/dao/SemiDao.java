@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author 应涛
  * @date 2021/12/13
@@ -13,10 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SemiDao {
-    String id;
-    String prod_id;
-    int num;
-    int limit;
-    int if_finish;
-    int ftime;
+    int id;
+    List<Integer> nowPess; //当前加工的是第几道工序
+    List<Integer> maxBat; //当前加工工序的批次加工个数
 }

@@ -18,4 +18,5 @@ public class ProductDao {
     int id;
     String prod_id;
     List<String> needs;
+    List<Integer> realNeeds; //将字符串转化为编号
 }

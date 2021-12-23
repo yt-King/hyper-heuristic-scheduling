@@ -79,11 +79,14 @@ public class ReadDataService {
                 ProductDao product = new ProductDao();
                 item = line.split(",");
                 List<String> needs = new ArrayList<>();
+                List<Integer> realNeeds = new ArrayList<>();
                 while (!item[0].equals(item[1])){
                     product.setId(i);
-                    product.setProd_id(item[0]);
+                    product.setProd_id(item[0]);  //读取所需半成品
                     needs.add(item[1]);
+                    realNeeds.add((int)item[1].charAt(item[1].length()-1)-96); //读取到的半成品转换成对应编码
                     product.setNeeds(needs);
+                    product.setRealNeeds(realNeeds);
                     item = reader.readLine().split(",");
                 }
                 i++;
