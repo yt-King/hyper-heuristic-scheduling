@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
 
 /**
  * @author 应涛
@@ -63,7 +64,15 @@ public class MakespanService {
             }
         }
         //根据订单截止时间来生成初始的编码
-
+        for (OrderDao order : orderList) {//在读取时已经按升序排序完成
+            List<Integer> list = productList.get(Integer.parseInt(order.getProd_id()) - 1).getRealNeeds();//需要的半成品类别
+            for (Integer j : list) {
+                for (int k = 0; k < order.getNum(); k++) {
+                    code.add(j);
+                    System.out.println("j = " + j);
+                }
+            }
+        }
     }
 
     /**
