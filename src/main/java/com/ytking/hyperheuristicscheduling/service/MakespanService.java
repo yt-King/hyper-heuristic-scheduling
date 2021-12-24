@@ -68,8 +68,10 @@ public class MakespanService {
             List<Integer> list = productList.get(Integer.parseInt(order.getProd_id()) - 1).getRealNeeds();//需要的半成品类别
             for (Integer j : list) {
                 for (int k = 0; k < order.getNum(); k++) {
-                    code.add(j);
-                    System.out.println("j = " + j);
+                    for (int t = 0; t < 4; t++) {
+                        code.add(j);//对工序编码，乘4是因为每个半成品有四道工序
+
+                    }
                 }
             }
         }
