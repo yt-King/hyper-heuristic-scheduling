@@ -25,8 +25,10 @@ public class MakespanService {
     List<ProcessDao> processList;
     int[] need = new int[10];//成品所需个数
     int[] semiNeed = new int[21];//半成品所需个数
-    List<Integer> code = new ArrayList<>(); //半成品编码
+    List<Integer> code = new ArrayList<>(); //半成品编码,从1开始
     SemiDao[] semis=new SemiDao[21];//编码的信息数组
+    List<List<Integer>> lists1 = new ArrayList<>();//编码的临时信息数组
+    List<List<Integer>> lists2= new ArrayList<>();//编码的临时信息数组
     ResDao[] res = new ResDao[10]; //加工资源
     ResDao[] resend = new ResDao[2];//装配资源
     List<ResultDao> result;
@@ -68,24 +70,23 @@ public class MakespanService {
         //根据订单截止时间来生成初始的编码
         for (OrderDao order : orderList) {//在读取时已经按升序排序完成
             List<Integer> list = productList.get(Integer.parseInt(order.getProd_id()) - 1).getRealNeeds();//需要的半成品类别
-            List<Integer> list1=new ArrayList<>();
-            List<Integer> list2=new ArrayList<>();
             for (Integer j : list) { //j:需要的半成品类别编号
+                int maxPi=0;//最大批次生产个数
+                for (int t = j*4-4; t < j*4; t++) {//找到maxPi
+                    if(Integer.parseInt(processList.get(t).getNum())>maxPi)
+                        maxPi=Integer.parseInt(processList.get(t).getNum());
+                }
                 for (int k = 0; k < order.getNum(); k++) {
-                    int maxPi=0;//最大批次生产个数
-                    for (int t = j*4-4; t < j*4; t++) {//找到maxPi
-                        if(Integer.parseInt(processList.get(t).getNum())>maxPi)
-                            maxPi=Integer.parseInt(processList.get(t).getNum());
-                    }
                     for (int t = j*4-4,pess=1; t < j*4; t++,pess++) {//根据maxPi进行编码
                         for (int p = 0; p < Math.ceil((double) maxPi/Integer.parseInt(processList.get(t).getNum())); p++) {
                             code.add(j); //添加编码，表示当前所加工的是哪一个半成品，具体工序等信息存放在信息数组semis中
-                            list1.add(Integer.parseInt(processList.get(t).getNum()));
-                            list2.add(pess);
+                            int a=Integer.parseInt(processList.get(t).getNum());
+                            lists1.get(j).add(a);
+                            lists2.get(j).add(pess);
                         }
                     }
-                    semis[j].setMaxBat(list1);
-                    semis[j].setNowPess(list2);
+                    semis[j].setMaxBat(lists1.get(j));
+                    semis[j].setNowPess(lists2.get(j));
                 }
             }
         }
@@ -100,8 +101,24 @@ public class MakespanService {
         init();
         read(fileList);//信息读取
         code();//编码以及信息数组生成
+        System.out.println("code.size() = " + code.size());
+        int size=0;
+        for (int i = 1; i < semis.length; i++) {
+            size+=semis[i].getNowPess().size();
+            System.out.println("size = " + size);
+            System.out.println("semis[i].getNowPess().size() = " + semis[i].getNowPess().size());
+        }
         for (int i:code) {
+            int flag = semis[i].getFlag();
+            int pess = semis[i].getNowPess().get(flag); //获取当前工序
+            int time = processList.get((i-1)*4+pess).getTime();
 
+
+
+            flag++;
+            semis[i].setFlag(flag);
+
+//            System.out.println("i = " + i+"   "+flag);
         }
         reset();
     }
@@ -113,14 +130,27 @@ public class MakespanService {
         need = new int[10];
         semiNeed = new int[21];
         code = new ArrayList<>();
+        lists1 = new ArrayList<>();
+        lists2 = new ArrayList<>();
     }
     /**
      * 初始化全局变量
      */
     public void init() {
+        need = new int[10];
+        semiNeed = new int[21];
+        code = new ArrayList<>();
         //初始化编码信息数组
         for (int i = 0; i < semis.length; i++) {
             semis[i]=new SemiDao();
+        }
+        //初始化临时编码信息数组
+        for (int i = 0; i < 21; i++) {
+            lists1.add(new ArrayList<>());
+        }
+        //初始化临时编码信息数组
+        for (int i = 0; i < 21; i++) {
+            lists2.add(new ArrayList<>());
         }
         //初始化加工资源数组
         for (int i = 0; i < res.length; i++) {
@@ -130,5 +160,6 @@ public class MakespanService {
         for (int i = 0; i < resend.length; i++) {
             resend[i]=new ResDao();
         }
+
     }
 }

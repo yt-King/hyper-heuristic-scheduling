@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +18,6 @@ import java.util.List;
 public class SemiDao {
     int id;
     int flag=0;//指向当前正在进行的工序
-    List<Integer> nowPess; //当前加工的是第几道工序
-    List<Integer> maxBat; //当前加工工序的批次加工个数
+    List<Integer> nowPess = new ArrayList<>(); //当前加工的是第几道工序
+    List<Integer> maxBat = new ArrayList<>(); //当前加工工序的批次加工个数
 }
