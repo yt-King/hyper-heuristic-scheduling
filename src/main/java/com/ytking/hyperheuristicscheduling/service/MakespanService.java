@@ -1,10 +1,7 @@
 package com.ytking.hyperheuristicscheduling.service;
 
 import com.sun.org.apache.bcel.internal.classfile.Code;
-import com.ytking.hyperheuristicscheduling.dao.OrderDao;
-import com.ytking.hyperheuristicscheduling.dao.ProcessDao;
-import com.ytking.hyperheuristicscheduling.dao.ProductDao;
-import com.ytking.hyperheuristicscheduling.dao.SemiDao;
+import com.ytking.hyperheuristicscheduling.dao.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +27,9 @@ public class MakespanService {
     int[] semiNeed = new int[21];//半成品所需个数
     List<Integer> code = new ArrayList<>(); //半成品编码
     SemiDao[] semis=new SemiDao[21];//编码的信息数组
+    ResDao[] res = new ResDao[10]; //加工资源
+    ResDao[] resend = new ResDao[2];//装配资源
+    List<ResultDao> result;
     /**
      * 读取各种初始数据
      *
@@ -55,7 +55,7 @@ public class MakespanService {
     /**
      * 进行初始化编码
      */
-    public SemiDao[] code() {
+    public void code() {
         for (OrderDao order : orderList) {//读取所需产品个数
             need[Integer.parseInt(order.getProd_id()) - 1] += order.getNum();
         }
@@ -64,10 +64,6 @@ public class MakespanService {
             for (Integer j : list) {
                 semiNeed[j] += need[i];
             }
-        }
-        //初始化编码信息数组
-        for (int i = 0; i < semis.length; i++) {
-            semis[i]=new SemiDao();
         }
         //根据订单截止时间来生成初始的编码
         for (OrderDao order : orderList) {//在读取时已经按升序排序完成
@@ -93,7 +89,6 @@ public class MakespanService {
                 }
             }
         }
-        return semis;
     }
 
     /**
@@ -101,11 +96,14 @@ public class MakespanService {
      *
      * @param fileList
      */
-    public SemiDao[] makespan(List<MultipartFile> fileList) {
+    public void makespan(List<MultipartFile> fileList) {
+        init();
         read(fileList);//信息读取
-        SemiDao[] code=code();
+        code();//编码以及信息数组生成
+        for (int i:code) {
+
+        }
         reset();
-        return code;
     }
 
     /**
@@ -115,5 +113,22 @@ public class MakespanService {
         need = new int[10];
         semiNeed = new int[21];
         code = new ArrayList<>();
+    }
+    /**
+     * 初始化全局变量
+     */
+    public void init() {
+        //初始化编码信息数组
+        for (int i = 0; i < semis.length; i++) {
+            semis[i]=new SemiDao();
+        }
+        //初始化加工资源数组
+        for (int i = 0; i < res.length; i++) {
+            res[i]=new ResDao();
+        }
+        //初始化装配资源数组
+        for (int i = 0; i < resend.length; i++) {
+            resend[i]=new ResDao();
+        }
     }
 }

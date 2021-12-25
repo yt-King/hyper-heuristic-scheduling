@@ -49,6 +49,6 @@ public class DataController {
     @PostMapping("/test")
     public R test(List<MultipartFile> fileList)  {
         List<ProcessDao> processList ;
-        return result.success(makespanService.makespan(fileList));
+        return result.success("aa");
     }
 }
