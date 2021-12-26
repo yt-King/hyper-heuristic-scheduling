@@ -18,6 +18,8 @@ import java.util.List;
 public class SemiDao {
     int id;
     int flag=0;//指向当前正在进行的工序
+    int time;//上一道工序的完成时间
+    int pess;//上一道工序的批次
     List<Integer> nowPess = new ArrayList<>(); //当前加工的是第几道工序
     List<Integer> maxBat = new ArrayList<>(); //当前加工工序的批次加工个数
 }

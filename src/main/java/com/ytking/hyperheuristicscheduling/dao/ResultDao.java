@@ -17,6 +17,7 @@ import java.util.List;
 public class ResultDao {
     int id; //加工的半成品编码
     int pess;//加工的工序
+    int num;//加工的数量
     int start;
     int end;
     int res;//加工或装配车间的编号
