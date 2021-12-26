@@ -12,8 +12,8 @@ public enum Renum {
     //这里是可以自己定义的，方便与前端交互即可
     UNKNOWN_ERROR(300,"未知错误"),
     SUCCESS(200,"成功"),
-    USER_NOT_EXIST(401,"用户不存在"),
-    USER_IS_EXISTS(402,"用户已存在"),
+    USER_NOT_EXIST(401,"数据不存在"),
+    USER_IS_EXISTS(402,"数据已存在"),
     DATA_IS_NULL(403,"数据为空"),
     ;
     private Integer code;
