@@ -46,11 +46,10 @@ public class DataController {
         processList= readDataService.readProcess(file);
         return result.success(processList);
     }
-    @PostMapping("/test")
+    @PostMapping("/ga")
     public R test(List<MultipartFile> fileList)  {
         List<ProcessDao> processList ;
-//        makespanService.makespan(fileList);
-        makespanService.hhGA();
+        makespanService.hhGA(fileList);
         return result.success("aa");
     }
 }

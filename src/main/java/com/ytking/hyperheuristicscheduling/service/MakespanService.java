@@ -2,6 +2,7 @@ package com.ytking.hyperheuristicscheduling.service;
 
 import com.sun.org.apache.bcel.internal.classfile.Code;
 import com.ytking.hyperheuristicscheduling.dao.*;
+import com.ytking.hyperheuristicscheduling.util.LLH;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,7 @@ import java.util.concurrent.ForkJoinPool;
  */
 @Service
 public class MakespanService {
+    private LLH llh=new LLH();
     @Autowired
     private ReadDataService readDataService;
     int makespan = 0;//完成时间
@@ -59,6 +61,10 @@ public class MakespanService {
      * 进行初始化编码
      */
     public void code() {
+        //初始化编码信息数组
+        for (int i = 0; i < semis.length; i++) {
+            semis[i] = new SemiDao();
+        }
         for (OrderDao order : orderList) {//读取所需产品个数
             need[Integer.parseInt(order.getProd_id()) - 1] += order.getNum();
         }
@@ -96,18 +102,12 @@ public class MakespanService {
     /**
      * 计算makespan
      *
-     * @param fileList
+     * @param
      */
-    public void makespan(List<MultipartFile> fileList) {
-        init();
-        read(fileList);//信息读取
-        code();//编码以及信息数组生成
+    public int makespan(List<Integer> codein) {
         int size = 0;
         makespan = 0;
-        for (int i = 1; i < semis.length; i++) {
-            size += semis[i].getNowPess().size();
-        }
-        for (int i : code) {
+        for (int i : codein) {
             int flag = semis[i].getFlag();
             int pess = semis[i].getNowPess().get(flag); //获取当前工序
             int time = processList.get((i - 1) * 4 + pess - 1).getTime(); //获取加工时间
@@ -134,6 +134,7 @@ public class MakespanService {
         }
         System.out.println("makespan = " + makespan);
         reset();
+        return makespan;
     }
 
     /**
@@ -192,18 +193,46 @@ public class MakespanService {
     /**
      * 超启发式算法——基于GA
      */
-    public void hhGA() {
+    public void hhGA(List<MultipartFile> fileList) {
+        read(fileList);//信息读取
+        init();
+        int num = 10;//种群数量
+        int resnum = 10;
+        List<List<Integer>> codes = new ArrayList<>();
+        int[] oldmakespan = new int[num];
+        int[] newmakespan = new int[num];
         //初始化种群
         List<String> individualList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < num; i++) {
             String val = "";
             for (int j = 0; j < 10; j++) {
                 int key = new java.util.Random().nextBoolean() ? 1 : 0;
-                val+=key;
+                val += key;
             }
             individualList.add(val);
         }
-        System.out.println("individualList.toString() = " + individualList.toString());
+        //初始化解的种群
+        code();//编码以及信息数组生成
+        for (int i = 0; i < resnum; i++) {
+//            Collections.shuffle(code);
+            codes.add(code);
+        }
+//        System.out.println("codes.toString() = " + codes.toString());
+        //计算适应度
+        for (String key : individualList) {
+            int flag=0;
+            for (int i = 0; i < key.length(); i++) {
+                String c = String.valueOf(key.charAt(i));
+                if (c.equals("1")) {
+                    llh.todo(i,codes.get(flag));
+                }
+            }
+            init();
+            makespan(codes.get(flag));
+            flag++;
+        }
+
+//        System.out.println("individualList.toString() = " + individualList.toString());
     }
 
     /**
@@ -226,7 +255,7 @@ public class MakespanService {
         code = new ArrayList<>();
         //初始化编码信息数组
         for (int i = 0; i < semis.length; i++) {
-            semis[i] = new SemiDao();
+            semis[i].setFlag(0);
         }
         //初始化临时编码信息数组
         for (int i = 0; i < 21; i++) {

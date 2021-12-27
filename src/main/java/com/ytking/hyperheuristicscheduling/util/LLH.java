@@ -11,7 +11,42 @@ import java.util.Random;
  */
 public class LLH {
     Random rand = new Random();
-
+    public void todo(int i,List<Integer> code){
+        switch (i){
+            case 1:
+                LLH1(code);
+                break;
+            case 2:
+                LLH2(code);
+                break;
+            case 3:
+                LLH3(code);
+                break;
+            case 4:
+                LLH4(code);
+                break;
+            case 5:
+                LLH5(code);
+                break;
+            case 6:
+                LLH6(code);
+                break;
+            case 7:
+                LLH7(code);
+                break;
+            case 8:
+                LLH8(code);
+                break;
+            case 9:
+                LLH9(code);
+                break;
+            case 10:
+                LLH1(code);
+                break;
+            default:
+                break;
+        }
+    }
     public void LLH1(List<Integer> code) {
         int a = rand.nextInt(code.size());
         int b = rand.nextInt(code.size());
